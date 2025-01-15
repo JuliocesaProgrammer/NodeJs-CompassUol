@@ -1,5 +1,6 @@
 const fs = require('fs');
 const http = require('http');
+const url = require('url');
 
 
 
@@ -40,15 +41,28 @@ const http = require('http');
 /////////////////////////////
 
 //Sever
+const data = fs.readFileSync('./complete-node-bootcamp/1-node-farm/final/dev-data/data.json', 'utf-8');
+const dataObject = JSON.parse(data);
 
 const server = http.createServer((req, res) =>{
-    console.log(req)
-    res.end("Hello From the server!");
+    const pathName = req.url
+
+    if (pathName === '/' || pathName === '/overview'){
+        res.end('Tihs is the overview')
+    }else if (pathName === '/product'){
+        res.end('Tihs is the product')
+    } else if(pathName === '/api'){
+        res.writeHead(200, {'content-type': 'application/json'})
+        res.end(data);
+    } else{
+        res.writeHead(404,{ 
+         'Content-type':  'text/html',
+         "My-own-Header": 'Hello-world'
+        })  //status code 404
+        res.end('<h1>Page Note Found!</h1>')
+    }
 });
 
 server.listen(8000, '127.0.0.1', () => {
     console.log('Listening to requests... on port 8000');
-})
-
-
-
+});
